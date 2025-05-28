@@ -36,7 +36,7 @@ export const orderChecker = (people: Person[]): number => {
     if (person.dogStatus === DogStatus.Avoid) {
       if ((teamMetrics?.have ?? 0) > distance) {
         throw new Error(
-          `team ${team} Has people with dogs further apart than avoid ${teamMetrics} vs ${distance}`,
+          `team ${team} Has people with dogs further apart than avoid ${teamMetrics?.have} vs ${distance}`,
         );
       }
     }
