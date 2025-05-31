@@ -75,19 +75,14 @@ function optimizeTeam(people: Person[]): Person[] {
 
   let bestLayout: Person[] = [];
   let bestLayoutScore = Number.NEGATIVE_INFINITY;
-  let bestAvoidDistance = 0;
-  let bestHaveDistance = 0;
 
   const teamPermutations = generatePermutations(people);
   teamPermutations.forEach(permutation => {
-    const {score, minAvoidDistance, minHaveDistance } = calculateScore(permutation);
-    const scoreDiff = score - bestLayoutScore;
+    const score = calculateScore(permutation);
 
     if (score > bestLayoutScore) {
             bestLayout = permutation;
             bestLayoutScore = score;
-            bestAvoidDistance = minAvoidDistance;
-            bestHaveDistance = minHaveDistance;
         }
   })
 
@@ -111,7 +106,7 @@ function generatePermutations(allPeople: Person[]): Person[][] {
   return permutations;
 }
 
-function calculateScore(people: Person[]): {score: number, minAvoidDistance: number, minHaveDistance: number} {
+function calculateScore(people: Person[]): number {
   let score = 0;
   let minAvoidDistance = null;
   let minHaveDistance = null;
@@ -129,6 +124,7 @@ function calculateScore(people: Person[]): {score: number, minAvoidDistance: num
           minAvoidDistance = distance;
         }
       } 
+      
       if (people[i].dogStatus === DogStatus.Have && people[j].dogStatus === DogStatus.Have) {
         score -= people.length - distance;
         if(!minHaveDistance){
@@ -140,16 +136,12 @@ function calculateScore(people: Person[]): {score: number, minAvoidDistance: num
     }
   }
 
-  if(minHaveDistance && minAvoidDistance && minAvoidDistance > minHaveDistance) {
+  if(minHaveDistance && minAvoidDistance && (minAvoidDistance > minHaveDistance)) {
     const distanceDifference = minAvoidDistance - minHaveDistance;
     score -= distanceDifference;
   }
 
-  return {
-    score,
-    minAvoidDistance: minAvoidDistance ?? people.length,
-    minHaveDistance: minHaveDistance ?? people.length
-  };
+  return score;
 }
 
 function oneAvoidOneHave(p1: Person, p2: Person) {
