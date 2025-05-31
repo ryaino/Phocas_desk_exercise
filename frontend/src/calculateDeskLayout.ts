@@ -1,6 +1,6 @@
-import { DogStatus, type Person } from './generated/graphql';
-//changed this import to make the inline type hints more friendly to read
+import { DogStatus, type PeopleQuery } from './generated/graphql';
 
+type Person = PeopleQuery['people'][0];
 /**
  * requirements teams must sit together.
  * People who don't like dogs should be placed as far away from those who have dogs as possible.
