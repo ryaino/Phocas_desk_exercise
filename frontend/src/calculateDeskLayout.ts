@@ -1,5 +1,5 @@
 import { DogStatus, type Person } from './generated/graphql';
-//changes this import to make the inline type hints more friendly to read
+//changed this import to make the inline type hints more friendly to read
 
 /**
  * requirements teams must sit together.
@@ -26,7 +26,7 @@ import { DogStatus, type Person } from './generated/graphql';
  * This test suite may not be exhaustive for all edge cases.
  */
 export const calculateDeskLayout = (people: Person[]): Person[] => {
-  if (people.length <= 2) return people
+  if (people.length <= 2) return people;
 
   const teams = splitIntoTeams(people);
   const bestTeamLayouts = calculateBestLayouts(teams);
@@ -46,64 +46,67 @@ export const calculateDeskLayout = (people: Person[]): Person[] => {
 function splitIntoTeams(people: Person[]): Map<string, Person[]> {
   const teams = new Map<string, Person[]>();
 
-  people.forEach((person) => {
-
+  for (const person of people) {
     //treat people without a team as a team of 1 instead of grouping them all together
     const teamId = person.team ? person.team.id : JSON.stringify(person);
 
     if (teams.has(teamId)) {
       teams.get(teamId)?.push(person);
     } else {
-      teams.set(teamId, [person])
+      teams.set(teamId, [person]);
     }
-  })
+  }
+
   return teams;
 }
 
 function calculateBestLayouts(teams: Map<string, Person[]>): Map<string, Person[]> {
   const optimizedTeams = new Map<string, Person[]>();
 
-  teams.keys().forEach(teamId => {
-    optimizedTeams.set(teamId, optimizeTeam(teams.get(teamId)!))
-  })
+  for (const teamId of teams.keys()) {
+    const team = teams.get(teamId);
+    if (team) {
+      optimizedTeams.set(teamId, optimizeTeam(team));
+    }
+  }
 
   return optimizedTeams;
 }
 
 function optimizeTeam(people: Person[]): Person[] {
-
   if (people.length <= 2) return people;
 
   let bestLayout: Person[] = [];
   let bestLayoutScore = Number.NEGATIVE_INFINITY;
 
   const teamPermutations = generateTeamPermutations(people);
-  teamPermutations.forEach(permutation => {
+
+  for (const permutation of teamPermutations) {
     const score = calculateTeamScore(permutation);
 
     if (score > bestLayoutScore) {
       bestLayout = permutation;
       bestLayoutScore = score;
     }
-  })
-
+  }
   return bestLayout;
 }
 
 function generateTeamPermutations(allPeople: Person[]): Person[][] {
   let permutations: Person[][] = [[]];
-  allPeople.forEach((person) => {
+
+  for (const person of allPeople) {
     const currentPermutation: Person[][] = [];
 
-    permutations.forEach(permutation => {
+    for (const permutation of permutations) {
       for (let i = 0; i <= permutation.length; i++) {
         const temp = [...permutation];
         temp.splice(i, 0, person);
         currentPermutation.push(temp);
       }
-    })
+    }
     permutations = currentPermutation;
-  })
+  }
   return permutations;
 }
 
@@ -113,7 +116,6 @@ function calculateTeamScore(people: Person[]): number {
   let minHaveDistance = null;
 
   for (let i = 0; i < people.length - 1; i++) {
-
     for (let j = i + 1; j <= people.length - 1; j++) {
       const distance = j - i;
 
@@ -137,7 +139,7 @@ function calculateTeamScore(people: Person[]): number {
     }
   }
 
-  if (minHaveDistance && minAvoidDistance && (minAvoidDistance > minHaveDistance)) {
+  if (minHaveDistance && minAvoidDistance && minAvoidDistance > minHaveDistance) {
     const distanceDifference = minAvoidDistance - minHaveDistance;
     score -= distanceDifference;
   }
@@ -146,8 +148,10 @@ function calculateTeamScore(people: Person[]): number {
 }
 
 function oneAvoidOneHave(p1: Person, p2: Person) {
-  return (p1.dogStatus === DogStatus.Avoid && p2.dogStatus === DogStatus.Have)
-    || (p1.dogStatus === DogStatus.Have && p2.dogStatus === DogStatus.Avoid)
+  return (
+    (p1.dogStatus === DogStatus.Avoid && p2.dogStatus === DogStatus.Have) ||
+    (p1.dogStatus === DogStatus.Have && p2.dogStatus === DogStatus.Avoid)
+  );
 }
 
 function addFlippedTeams(teams: Map<string, Person[]>): Map<string, Person[][]> {
@@ -155,12 +159,11 @@ function addFlippedTeams(teams: Map<string, Person[]>): Map<string, Person[][]> 
 
   teams.forEach((value, key) => {
     if (value.length === 1) {
-      inclFlippedTeams.set(key, [value])
-
+      inclFlippedTeams.set(key, [value]);
     } else {
-      inclFlippedTeams.set(key, [[...value], value.reverse()])
+      inclFlippedTeams.set(key, [[...value], value.reverse()]);
     }
-  })
+  });
 
   return inclFlippedTeams;
 }
@@ -168,38 +171,37 @@ function addFlippedTeams(teams: Map<string, Person[]>): Map<string, Person[][]> 
 function generateLayouts(allTeamLayouts: Map<string, Person[][]>): Person[][] {
   let allLayouts: Person[][][] = [[[]]];
 
-  allTeamLayouts.forEach(teamLayouts => {
-
+  for (const teamLayouts of allTeamLayouts.values()) {
     const incompleteLayouts = [...allLayouts];
 
     const layoutsWithTeamLayouts: Person[][][] = [];
-    incompleteLayouts.forEach(layout => {
-      teamLayouts.forEach(teamLayout => {
 
+    for (const layout of incompleteLayouts) {
+      for (const teamLayout of teamLayouts) {
         for (let i = 0; i <= layout.length; i++) {
           const temp = [...layout];
           temp.splice(i, 0, teamLayout);
           layoutsWithTeamLayouts.push(temp);
         }
-      })
+      }
       allLayouts = layoutsWithTeamLayouts;
-    })
-  })
-  return allLayouts.map(layout => layout.flat());
+    }
+  }
+  return allLayouts.map((layout) => layout.flat());
 }
 
 function findBestLayout(layouts: Person[][]): Person[] {
   let bestLayout: Person[] = [];
   let bestLayoutScore = Number.NEGATIVE_INFINITY;
 
-  layouts.forEach(permutation => {
+  for (const permutation of layouts) {
     const score = calculateLayoutScore(permutation);
 
     if (score > bestLayoutScore) {
       bestLayout = permutation;
       bestLayoutScore = score;
     }
-  })
+  }
   return bestLayout;
 }
 
@@ -207,7 +209,6 @@ function calculateLayoutScore(people: Person[]): number {
   let score = 0;
 
   for (let i = 0; i < people.length - 1; i++) {
-
     for (let j = i + 1; j <= people.length - 1; j++) {
       const distance = j - i;
 
@@ -222,5 +223,3 @@ function calculateLayoutScore(people: Person[]): number {
   }
   return score;
 }
-
-

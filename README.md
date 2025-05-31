@@ -6,7 +6,7 @@ This exercise focuses on modifying a simple application that arranges desks for 
 ## Tasks
 
 You must do this task:
-- [ ] implement `calculateDeskLayout` in `calculateDeskLayout.ts` (REQUIRED)
+- [x] implement `calculateDeskLayout` in `calculateDeskLayout.ts` (REQUIRED)
 
 You must also do **exactly two** of the following tasks:
 - [ ] fix a bug in `TeamsPage.tsx` where editing the team name fails
