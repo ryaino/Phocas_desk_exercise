@@ -51,6 +51,8 @@ The application uses a local version of dynamoDB for its storage. The state will
 
 If you do not wish to use Codespaces, opening the exercise in vscode should prompt with a [devcontainer](https://containers.dev/) toaster message. Accepting this will auto-configure a docker container for development.
 
+If you're on Windows and have saved the code inside your WSL2 filesystem then you will first need to connect your IDE remotely to WSL and then create / connect to the devcontainer from there.
+
 ## Manual Setup
 If you would rather run this directly on your machine, you will need the following software installed.
 

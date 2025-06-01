@@ -1,11 +1,11 @@
 {
 	"name": "Java & Typescript",
-	"image": "mcr.microsoft.com/devcontainers/base:bookworm",
+	"image": "mcr.microsoft.com/devcontainers/base:ubuntu",
 	// 👇 Features to add to the Dev Container. More info: https://containers.dev/implementors/features.
 	"features": {
 		"ghcr.io/devcontainers/features/node:1": {},
 		"ghcr.io/devcontainers/features/java:1": {
-			"version": "latest",
+			"version": "21",
 			"installMaven": true,
 			"installGradle": false
 		}
