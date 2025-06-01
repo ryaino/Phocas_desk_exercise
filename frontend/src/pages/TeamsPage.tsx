@@ -14,7 +14,7 @@ import {
   TextField,
 } from '@mui/material';
 import { useState } from 'react';
-import { DELETE_TEAM, PUT_TEAM, TEAM_QUERY } from '../queries/teams';
+import { DELETE_TEAM, PUT_TEAM, REMOVE_MEMBER, TEAM_QUERY } from '../queries/teams';
 
 export default function TeamsPage() {
   const [newTeam, setNewTeam] = useState<string>('');
@@ -45,6 +45,22 @@ export default function TeamsPage() {
         const team = cache.identify(data.deleteTeam);
         cache.evict({ id: team });
       }
+    },
+  });
+
+  const [removeMember] = useMutation(REMOVE_MEMBER, {
+    update(cache, { data }) {
+      let teams = cache.readQuery({ query: TEAM_QUERY })?.teams;
+      if (!data || !teams) {
+        return;
+      }
+
+      teams = teams.map((team) => (team.id === data.removeMember.id ? data.removeMember : team));
+
+      cache.writeQuery({
+        query: TEAM_QUERY,
+        data: { teams },
+      });
     },
   });
 
@@ -83,6 +99,13 @@ export default function TeamsPage() {
     }
   };
 
+  const handleRemovePerson = async (memberId: string, teamId: string) => {
+    const team = data?.teams.find((team) => team.id === teamId);
+    if (team) {
+      await removeMember({ variables: { teamId: teamId, memberToRemove: memberId } });
+    }
+  };
+
   return (
     <div>
       <TableContainer>
@@ -108,7 +131,12 @@ export default function TeamsPage() {
                 <TableCell>
                   <Stack spacing={1} direction='row'>
                     {team.members.map((member) => (
-                      <Chip key={member.id} label={member.name} color='primary' />
+                      <Chip
+                        key={member.id}
+                        label={member.name}
+                        color='primary'
+                        onDelete={() => handleRemovePerson(member.id, team.id)}
+                      />
                     ))}
                   </Stack>
                 </TableCell>

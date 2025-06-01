@@ -33,3 +33,16 @@ export const DELETE_TEAM = graphql(`
     }
   }
   `);
+
+export const REMOVE_MEMBER = graphql(`
+  mutation removeMember($teamId: ID!, $memberToRemove: ID! ) {
+    removeMember(teamId: $teamId, memberToRemove: $memberToRemove) {
+      id
+      name
+      members {
+        id
+        name
+      }
+    }
+  }
+  `);
