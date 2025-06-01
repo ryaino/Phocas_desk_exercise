@@ -38,9 +38,12 @@ public class Team extends Table {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) return true;
-		if (!super.equals(obj)) return false;
-		if (getClass() != obj.getClass()) return false;
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
 		Team other = (Team) obj;
 		return Objects.equals(name, other.name);
 	}
@@ -61,6 +64,16 @@ public class Team extends Table {
 	public static Team deleteTeam(ApiContext context, @Id String id) {
 		var team = context.database().get(Team.class, id);
 		return context.database().delete(team, true);
+	}
+
+	@Mutation
+	public static Team removeMember(ApiContext context, @Id String teamId, @Id String memberToRemove) {
+
+		var person = context.database().get(Person.class, memberToRemove);
+
+		context.database().link(person, Team.class, null);
+
+		return context.database().get(Team.class, teamId);
 	}
 
 }

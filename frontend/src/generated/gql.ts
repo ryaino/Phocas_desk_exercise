@@ -21,6 +21,7 @@ type Documents = {
     "\n  query teams {\n    teams {\n      id\n      name\n      members {\n        id\n        name\n      }\n    }\n  }\n": typeof types.TeamsDocument,
     "\n  mutation putTeam($id: ID, $name: String!) {\n    putTeam(id: $id, name: $name) {\n      id\n      name\n      members {\n        id\n        name\n      }\n    }\n  }\n  ": typeof types.PutTeamDocument,
     "\n  mutation deleteTeam($id: ID!) {\n    deleteTeam(id: $id) {\n      id\n    }\n  }\n  ": typeof types.DeleteTeamDocument,
+    "\n  mutation removeMember($teamId: ID!, $memberToRemove: ID! ) {\n    removeMember(teamId: $teamId, memberToRemove: $memberToRemove) {\n      id\n      name\n      members {\n        id\n        name\n      }\n    }\n  }\n  ": typeof types.RemoveMemberDocument,
 };
 const documents: Documents = {
     "\n  query people {\n    people {\n      id\n      name\n      dogStatus\n      team {\n    id\n    name\n    }\n    }\n  }\n": types.PeopleDocument,
@@ -30,6 +31,7 @@ const documents: Documents = {
     "\n  query teams {\n    teams {\n      id\n      name\n      members {\n        id\n        name\n      }\n    }\n  }\n": types.TeamsDocument,
     "\n  mutation putTeam($id: ID, $name: String!) {\n    putTeam(id: $id, name: $name) {\n      id\n      name\n      members {\n        id\n        name\n      }\n    }\n  }\n  ": types.PutTeamDocument,
     "\n  mutation deleteTeam($id: ID!) {\n    deleteTeam(id: $id) {\n      id\n    }\n  }\n  ": types.DeleteTeamDocument,
+    "\n  mutation removeMember($teamId: ID!, $memberToRemove: ID! ) {\n    removeMember(teamId: $teamId, memberToRemove: $memberToRemove) {\n      id\n      name\n      members {\n        id\n        name\n      }\n    }\n  }\n  ": types.RemoveMemberDocument,
 };
 
 /**
@@ -74,6 +76,10 @@ export function graphql(source: "\n  mutation putTeam($id: ID, $name: String!) {
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation deleteTeam($id: ID!) {\n    deleteTeam(id: $id) {\n      id\n    }\n  }\n  "): (typeof documents)["\n  mutation deleteTeam($id: ID!) {\n    deleteTeam(id: $id) {\n      id\n    }\n  }\n  "];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation removeMember($teamId: ID!, $memberToRemove: ID! ) {\n    removeMember(teamId: $teamId, memberToRemove: $memberToRemove) {\n      id\n      name\n      members {\n        id\n        name\n      }\n    }\n  }\n  "): (typeof documents)["\n  mutation removeMember($teamId: ID!, $memberToRemove: ID! ) {\n    removeMember(teamId: $teamId, memberToRemove: $memberToRemove) {\n      id\n      name\n      members {\n        id\n        name\n      }\n    }\n  }\n  "];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};
