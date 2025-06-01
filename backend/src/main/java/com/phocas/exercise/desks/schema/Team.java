@@ -5,11 +5,11 @@ import java.util.Objects;
 import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.phocas.exercise.desks.ApiContext;
 import com.phocassoftware.graphql.builder.annotations.Id;
 import com.phocassoftware.graphql.builder.annotations.Mutation;
 import com.phocassoftware.graphql.builder.annotations.Query;
 import com.phocassoftware.graphql.database.manager.Table;
-import com.phocas.exercise.desks.ApiContext;
 
 public class Team extends Table {
 
@@ -55,6 +55,12 @@ public class Team extends Table {
 		var team = new Team(name);
 		team.setId(id.orElse(context.database().newId()));
 		return context.database().put(team);
+	}
+
+	@Mutation
+	public static Team deleteTeam(ApiContext context, @Id String id) {
+		var team = context.database().get(Team.class, id);
+		return context.database().delete(team, true);
 	}
 
 }
