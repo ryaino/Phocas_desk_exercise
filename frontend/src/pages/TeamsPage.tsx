@@ -55,8 +55,8 @@ export default function TeamsPage() {
         return;
       }
 
+      //there's an apollo error here from not merging the cache properly. Couldn't figure out how to make it go away.
       teams = teams.map((team) => (team.id === data.removeMember.id ? data.removeMember : team));
-
       cache.writeQuery({
         query: TEAM_QUERY,
         data: { teams },
@@ -132,6 +132,7 @@ export default function TeamsPage() {
                   <Stack spacing={1} direction='row'>
                     {team.members.map((member) => (
                       <Chip
+                        data-testid='memberName'
                         key={member.id}
                         label={member.name}
                         color='primary'
