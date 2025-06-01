@@ -139,11 +139,17 @@ function calculateTeamScore(people: Person[]): number {
     }
   }
 
-  if (minHaveDistance && minAvoidDistance && (minAvoidDistance - minHaveDistance >= 2)) {
-    const distanceDifference = minAvoidDistance - minHaveDistance;
-    score -= distanceDifference;
-  }
 
+
+  if (minHaveDistance && minAvoidDistance) {
+    if (minAvoidDistance > minHaveDistance){
+      const distanceDifference = minAvoidDistance - minHaveDistance;
+      score -= distanceDifference;
+    } else if (minAvoidDistance < minHaveDistance) {
+      const distanceDifference = minHaveDistance - minAvoidDistance;
+      score -= 2 * distanceDifference;
+    }
+  }
   return score;
 }
 
